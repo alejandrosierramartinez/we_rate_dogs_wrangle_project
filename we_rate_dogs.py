@@ -65,17 +65,21 @@ with open('tweet_json.txt') as json_file:
 tweet_json = pd.DataFrame(tweet_json, columns = ['tweet_id', 'retweet_count', 'favorite_count'])
 
 #Assess data
-print(twitter_archive.head())
-print(twitter_archive.info())
-#print(twitter_archive.sample(10))
+#print(twitter_archive.info())
 #print(twitter_archive.describe())
+#print(twitter_archive.sample(20))
 
-#print(image_predictions.head())
 #print(image_predictions.info())
-#print(image_predictions.sample(10))
 #print(image_predictions.describe())
+#print(image_predictions.sample(20))
 
-#print(tweet_json.head())
 #print(tweet_json.info())
-#print(tweet_json.sample(10))
 #print(tweet_json.describe())
+#print(tweet_json.sample(20))
+
+#data cleaning
+# combine tables into a new one df where we perform cleaning operations
+#pd.merge(twitter_archive, image_predictions, on='tweet_id',  how='left')
+master_clean = twitter_archive.merge(image_predictions, on='tweet_id', how='inner').merge(tweet_json, on='tweet_id', how='inner')
+print(master_clean.head())
+print(master_clean.info())
