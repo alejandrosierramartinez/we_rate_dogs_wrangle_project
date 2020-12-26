@@ -102,8 +102,8 @@ master_clean ['rating_numerator']= master_clean['rating_numerator']*10/master_cl
 master_clean ['rating_denominator']= master_clean['rating_denominator']*10/master_clean['rating_denominator']
 
 #test
-non_standard_denominator = master_clean.query('rating_denominator != 10')
-print(non_standard_denominator['rating_denominator'].count())
+#non_standard_denominator = master_clean.query('rating_denominator != 10')
+#print(non_standard_denominator['rating_denominator'].count())
 
 #numerator ratings max value
 high_ratings = master_clean.query('rating_numerator > 15')
@@ -111,5 +111,11 @@ print(high_ratings[['tweet_id', 'expanded_urls', 'rating_numerator', 'rating_den
 
 master_clean = master_clean.query('rating_numerator < 15')
 #test
-print(master_clean.rating_numerator.max())
-print(master_clean.describe()[['rating_numerator', 'rating_denominator']])
+#print(master_clean.rating_numerator.max())
+#print(master_clean.describe()[['rating_numerator', 'rating_denominator']])
+
+#dog names duplicated values
+print(master_clean.name.value_counts().head())
+print(master_clean[master_clean.name == "a"]['text'])
+
+#extract source from link in source column
