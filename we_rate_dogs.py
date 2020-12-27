@@ -1,3 +1,5 @@
+#test lines have been commented to provide a clean script output
+
 # load packages
 import pandas as pd 
 import numpy as np
@@ -160,8 +162,17 @@ for url in master_clean.expanded_urls:
 #print(urls[0:5])
 
 
-
-
 #dog names duplicated values
 #print(master_clean.name.value_counts().head())
 #print(master_clean[master_clean.name == "a"]['text'])
+
+#identify text with "We only rate dogs." comment
+#only_dogs = master_clean[master_clean['text'].str.contains('We only rate dogs.')]
+#print(only_dogs[['rating_numerator', 'name', 'retweet_count', 'favorite_count', 'text']])
+
+#drop rows without dogs
+master_clean = master_clean[~master_clean.text.str.contains('We only rate dogs.')]
+
+#test
+only_dogs = master_clean[master_clean['text'].str.contains('We only rate dogs.')]
+print(only_dogs[['rating_numerator', 'name', 'retweet_count', 'favorite_count', 'text']])
