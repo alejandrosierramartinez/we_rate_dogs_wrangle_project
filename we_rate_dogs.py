@@ -27,10 +27,13 @@ image_predictions = pd.read_csv('image-predictions.tsv', sep='\t')
 
 #twitter api information
 
-consumer_key = '0Bfm4ndyhQn7KySsuh51Vnukm'
-consumer_secret = 'gqTSd4AMo69HT1AnaXjhz1IXgF5BFRCOtYWnYUyufRChtMhRof'
-access_token = '524802061-TeSt8iwdGD32eUZX0AfMKGmce6mVM7NERYnQE7KM'
-access_secret = '0V5dTYz0dvY8aoFbylbQGj8lxPmY1T5lJPayRpVdBQTxr'
+f=open('twitter_api_information.txt',"r")
+lines=f.readlines()
+consumer_key = lines[0]
+consumer_secret = lines[1]
+access_token = lines[2]
+access_secret = lines[3]
+f.close()
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
@@ -184,6 +187,9 @@ zero_fav = master_clean.query('favorite_count == 0')
 
 zero_rt = master_clean.query('retweet_count == 0')
 print(zero_rt)
+
+#save master clean to csv file
+master_clean.to_csv('twitter_archive_master.csv')
 
 #data exploration
 # correlation matrix
