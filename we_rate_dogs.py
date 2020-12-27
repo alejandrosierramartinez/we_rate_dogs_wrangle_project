@@ -127,16 +127,39 @@ print(master_clean.source.value_counts())
 #print(master_clean.source.head())
 
 #dog stage column
-#bikes.loc[bikes['weekday'].isin([5, 6]), 'is_weekend'] = 1  # 5 and 6 correspond to Sat and Sun
 master_clean['dog_stage'] = master_clean.doggo
-#master_clean.loc[master_clean['doggo'].isin(['doggo']), 'dog_stage'] = 'doggo'
+
 master_clean.loc[master_clean['doggo']=='doggo', 'dog_stage'] = 'doggo'
 master_clean.loc[master_clean['puppo']=='puppo', 'dog_stage'] = 'puppo'
 master_clean.loc[master_clean['floofer']=='floofer', 'dog_stage'] = 'floofer'
 master_clean.loc[master_clean['pupper']=='pupper', 'dog_stage'] = 'pupper'
 
 #test
-print(master_clean.dog_stage.value_counts())
+#print(master_clean.dog_stage.value_counts())
+
+#extended urls column with duplicated information
+#check for duplicated fields
+count = 0
+for url in master_clean.expanded_urls:
+    if len(url.split(',')) > 1:
+        if url.split(',')[1] != url.split(',') [-1]:
+            count += 1
+            print(count)
+            print(False)
+            print(url)
+
+#split into one entry
+urls = []
+for url in master_clean.expanded_urls:
+    if len(url.split(',')) > 1:
+        urls.append(url.split(',')[-1])
+    else:
+        urls.append(url)
+
+#test
+#print(urls[0:5])
+
+
 
 
 #dog names duplicated values
