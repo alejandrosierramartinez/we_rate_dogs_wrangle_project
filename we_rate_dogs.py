@@ -222,7 +222,23 @@ scatter_vars = ['rating_numerator', 'favorite_count', 'retweet_count']
 
 g = sb.PairGrid(data = master_clean, vars = scatter_vars, height = 1.5, aspect = 1.5)
 g = g.map_diag(plt.hist);
-g.map_offdiag(plt.scatter)
+g.map_offdiag(sb.regplot, scatter_kws={'alpha':0.15})
 plt.subplots_adjust(top=0.9)
 plt.suptitle("Scatterplot grid")
+plt.show()
+
+#ratings by dog breed
+breeds = master_clean.groupby('p1').agg(count=('rating_numerator', 'size'), mean_rating=('rating_numerator', 'mean')).reset_index()
+breeds = breeds.sort_values('count', ascending=False)
+
+#plot top ten count breeds
+breeds_top_ten = breeds.iloc[0:10,:]
+
+base_color = sb.color_palette()[0]
+sb.barplot(y='mean_rating', x='p1', data=breeds_top_ten, color = base_color)
+plt.xticks(rotation=30, size=8)  # Set text labels.
+plt.ylim(0, 15)
+plt.title('Breeds mean rating')
+plt.xlabel('Breed')
+plt.ylabel('Mean rating')
 plt.show()
