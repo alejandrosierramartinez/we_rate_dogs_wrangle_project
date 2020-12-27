@@ -185,7 +185,7 @@ zero_fav = master_clean.query('favorite_count == 0')
 zero_rt = master_clean.query('retweet_count == 0')
 print(zero_rt)
 
-#univariate exploration
+#data exploration
 # correlation matrix
 numeric_vars = ['rating_numerator', 'p1_conf', 'p2_conf', 'p3_conf', 'retweet_count', 'favorite_count']
 
@@ -194,4 +194,25 @@ sb.heatmap(master_clean[numeric_vars].corr(), annot = True, fmt = '.2f',
 plt.title('Correlation matrix')
 plt.xticks(fontsize=7, rotation=0)
 plt.yticks(fontsize=7)
+plt.show()
+
+#rating univariate exploration
+plt.hist(data = master_clean, x ='rating_numerator')
+plt.title('Ratings histogram')
+plt.xlabel('Rating')
+plt.ylabel('Count')
+plt.show()
+
+#favorite counts univariate exploration
+plt.hist(data = master_clean, x ='favorite_count')
+plt.title('Favorites histogram')
+plt.xlabel('Favorites')
+plt.ylabel('Count')
+plt.show()
+
+#retweet counts univariate exploration
+plt.hist(data = master_clean, x ='retweet_count')
+plt.title('Retweets histogram')
+plt.xlabel('Retweets')
+plt.ylabel('Count')
 plt.show()
