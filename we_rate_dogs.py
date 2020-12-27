@@ -3,7 +3,7 @@
 # load packages
 import pandas as pd 
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import seaborn as sb 
 import requests
 import os
@@ -184,3 +184,14 @@ zero_fav = master_clean.query('favorite_count == 0')
 
 zero_rt = master_clean.query('retweet_count == 0')
 print(zero_rt)
+
+#univariate exploration
+# correlation matrix
+numeric_vars = ['rating_numerator', 'p1_conf', 'p2_conf', 'p3_conf', 'retweet_count', 'favorite_count']
+
+sb.heatmap(master_clean[numeric_vars].corr(), annot = True, fmt = '.2f',
+           cmap = 'vlag_r', linewidths=.5 )
+plt.title('Correlation matrix')
+plt.xticks(fontsize=7, rotation=0)
+plt.yticks(fontsize=7)
+plt.show()
