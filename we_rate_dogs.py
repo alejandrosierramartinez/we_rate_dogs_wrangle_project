@@ -242,3 +242,21 @@ plt.title('Breeds mean rating')
 plt.xlabel('Breed')
 plt.ylabel('Mean rating')
 plt.show()
+
+#ratings, favorites and retweets
+#three variable heatmap
+master_clean['favorites_bin'] = pd.qcut(master_clean['favorite_count'], 10)
+master_clean['retweets_bin'] = pd.qcut(master_clean['retweet_count'], 10)
+
+master_clean.drop_duplicates(['favorites_bin','retweets_bin'], inplace=True)
+data_pivoted = master_clean.pivot('favorites_bin', 'retweets_bin', 'rating_numerator')
+ax = sb.heatmap(data_pivoted, cmap="Blues", linewidths=.5)
+plt.title('Ratings by favorites and retweets')
+ax.invert_yaxis()
+plt.yticks(size=6)
+plt.xticks(np.arange(10), ['0-0.4', '0.4-0.9', '0.9-1.8', '1.8-2.6', '2.6-3.4', '3.4-4.8', '4.8-7.4', '7.4-12.5', '12.5-20', '20-150'])  # Set text labels.
+plt.xticks(rotation=30, size=6)
+plt.yticks(np.arange(10), ['0-0.2', '0.2-0.4', '0.4-0.6', '0.6-0.8', '0.8-1.1', '1.1-1.6', '1.6-2.2', '2.2-3.3', '3.3-5.5', '5.5-7.6'])  # Set text labels.
+plt.xlabel('Favorites (x1000)', size = 10)
+plt.ylabel('Retweets( x1000)', size = 10)
+plt.show()
