@@ -97,7 +97,8 @@ master_clean = twitter_archive_new.merge(image_predictions_new, on='tweet_id', h
 
 #keep only original dog ratings
 master_clean = master_clean[master_clean.retweeted_status_id.isnull()]
-col_to_drop = ['retweeted_status_id', 'retweeted_status_user_id', 'retweeted_status_timestamp']
+master_clean = master_clean[master_clean.in_reply_to_user_id.isnull()]
+col_to_drop = ['in_reply_to_status_id', 'in_reply_to_user_id', 'retweeted_status_id', 'retweeted_status_user_id', 'retweeted_status_timestamp']
 master_clean.drop(col_to_drop, axis=1, inplace = True)
 #test
 print(master_clean.info())
@@ -115,7 +116,7 @@ print(zero_ratings)
 non_standard_denominator = master_clean.query('rating_denominator != 10')
 print(non_standard_denominator['rating_denominator'].count())
 
-#standard denominator 10
+#standardize denominator 10
 master_clean ['rating_numerator']= master_clean['rating_numerator']*10/master_clean['rating_denominator']
 master_clean ['rating_denominator']= master_clean['rating_denominator']*10/master_clean['rating_denominator']
 
@@ -123,7 +124,23 @@ master_clean ['rating_denominator']= master_clean['rating_denominator']*10/maste
 #non_standard_denominator = master_clean.query('rating_denominator != 10')
 #print(non_standard_denominator['rating_denominator'].count())
 
-#numerator ratings max value
+#high ratings
+high_rating = master_clean.query('rating_numerator > 15')
+#print(high_rating[['expanded_urls', 'rating_numerator', 'text']])
+
+for i in high_rating['text']:
+    print(i)
+
+#change from 27 to eleven the first rating value
+master_clean.loc[master_clean['rating_numerator'] == 27.0, 'rating_numerator'] = 11
+#test
+master_clean.loc[master_clean['rating_numerator'] == 27]
+
+#remove high rating outliers
+master_clean = master_clean.query('rating_numerator < 20')
+#test
+print(master_clean.rating_numerator.max())
+print(master_clean.describe()[['rating_numerator', 'rating_denominator']])
 
 
 #extract source from link in source column
@@ -139,15 +156,30 @@ print(master_clean.source.value_counts())
 #print(master_clean.source.head())
 
 #dog stage column
-master_clean['dog_stage'] = master_clean.doggo
+# handle none
+master_clean.doggo.replace('None', '', inplace=True)
+master_clean.floofer.replace('None', '', inplace=True)
+master_clean.pupper.replace('None', '', inplace=True)
+master_clean.puppo.replace('None', '', inplace=True)
 
-master_clean.loc[master_clean['doggo']=='doggo', 'dog_stage'] = 'doggo'
-master_clean.loc[master_clean['puppo']=='puppo', 'dog_stage'] = 'puppo'
-master_clean.loc[master_clean['floofer']=='floofer', 'dog_stage'] = 'floofer'
-master_clean.loc[master_clean['pupper']=='pupper', 'dog_stage'] = 'pupper'
+# merge into column
+master_clean['dog_stage'] = master_clean.doggo + master_clean.floofer + master_clean.pupper + master_clean.puppo
+
+# handle multiple stages
+master_clean.loc[master_clean.dog_stage == 'doggopupper', 'dog_stage'] = 'doggo, pupper'
+master_clean.loc[master_clean.dog_stage == 'doggopuppo', 'dog_stage'] = 'doggo, puppo'
+master_clean.loc[master_clean.dog_stage == 'doggofloofer', 'dog_stage'] = 'doggo, floofer'
+
+# handle missing values
+master_clean.loc[master_clean.dog_stage == '', 'dog_stage'] = np.nan
 
 #test
-#print(master_clean.dog_stage.value_counts())
+print(master_clean.dog_stage.value_counts())
+
+#drop columns that won´t be used anymore
+col_to_drop = ['doggo', 'puppo', 'floofer', 'pupper']
+master_clean.drop(col_to_drop, axis=1, inplace = True)
+print(master_clean.info())
 
 #extended urls column with duplicated information
 #check for duplicated fields
@@ -223,9 +255,27 @@ plt.xlabel('Favorites')
 plt.ylabel('Count')
 plt.show()
 
+#zoom in removing outliers for visualization
+fav_plot_data = master_clean.query('favorite_count < 5000')
+
+plt.hist(data = fav_plot_data, x ='favorite_count')
+plt.title('Favorites histogram zoomed in')
+plt.xlabel('Favorites')
+plt.ylabel('Count')
+plt.show()
+
 #retweet counts univariate exploration
 plt.hist(data = master_clean, x ='retweet_count')
 plt.title('Retweets histogram')
+plt.xlabel('Retweets')
+plt.ylabel('Count')
+plt.show()
+
+#zoom in removing outliers for visualization
+rt_plot_data = master_clean.query('retweet_count < 5000')
+
+plt.hist(data = rt_plot_data, x ='retweet_count')
+plt.title('Retweets histogram zoomed in')
 plt.xlabel('Retweets')
 plt.ylabel('Count')
 plt.show()
@@ -243,6 +293,7 @@ plt.show()
 #ratings by dog breed
 breeds = master_clean.groupby('p1').agg(count=('rating_numerator', 'size'), mean_rating=('rating_numerator', 'mean')).reset_index()
 breeds = breeds.sort_values('count', ascending=False)
+print(breeds.head(10))
 
 #plot top ten count breeds
 breeds_top_ten = breeds.iloc[0:10,:]
