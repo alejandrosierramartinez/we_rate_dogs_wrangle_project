@@ -82,12 +82,21 @@ tweet_json = pd.DataFrame(tweet_json, columns = ['tweet_id', 'retweet_count', 'f
 #print(tweet_json.describe())
 #print(tweet_json.sample(20))
 
+#create a copy of the df to work on
+twitter_archive_new = twitter_archive.copy()
+image_predictions_new = image_predictions.copy()
+tweet_json_new = tweet_json.copy()
+
+
 #data cleaning
 # combine tables into a new one df where we perform cleaning operations
-master_clean = twitter_archive.merge(image_predictions, on='tweet_id', how='inner').merge(tweet_json, on='tweet_id', how='inner')
+master_clean = twitter_archive_new.merge(image_predictions_new, on='tweet_id', how='inner').merge(tweet_json_new, on='tweet_id', how='inner')
 #test
-#print(master_clean.head())
+print(master_clean.head())
 #print(master_clean.info())
+
+#
+
 
 #convert timestamp to date type
 master_clean['timestamp'] = pd.to_datetime(master_clean.timestamp)
@@ -111,13 +120,7 @@ master_clean ['rating_denominator']= master_clean['rating_denominator']*10/maste
 #print(non_standard_denominator['rating_denominator'].count())
 
 #numerator ratings max value
-high_ratings = master_clean.query('rating_numerator > 15')
-print(high_ratings[['tweet_id', 'expanded_urls', 'rating_numerator', 'rating_denominator', 'name', 'retweet_count', 'favorite_count']])
 
-master_clean = master_clean.query('rating_numerator < 15')
-#test
-#print(master_clean.rating_numerator.max())
-#print(master_clean.describe()[['rating_numerator', 'rating_denominator']])
 
 #extract source from link in source column
 source = []
