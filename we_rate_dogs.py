@@ -216,3 +216,13 @@ plt.title('Retweets histogram')
 plt.xlabel('Retweets')
 plt.ylabel('Count')
 plt.show()
+
+#ratings, retweets and favorites scatterplot
+scatter_vars = ['rating_numerator', 'favorite_count', 'retweet_count']
+
+g = sb.PairGrid(data = master_clean, vars = scatter_vars, height = 1.5, aspect = 1.5)
+g = g.map_diag(plt.hist);
+g.map_offdiag(plt.scatter)
+plt.subplots_adjust(top=0.9)
+plt.suptitle("Scatterplot grid")
+plt.show()
