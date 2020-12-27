@@ -114,12 +114,7 @@ master_clean = master_clean.query('rating_numerator < 15')
 #print(master_clean.rating_numerator.max())
 #print(master_clean.describe()[['rating_numerator', 'rating_denominator']])
 
-#dog names duplicated values
-print(master_clean.name.value_counts().head())
-print(master_clean[master_clean.name == "a"]['text'])
-
 #extract source from link in source column
-print(master_clean.source[10])
 source = []
 for s in master_clean.source:
     source_split = s.split('>')[-2].split('<')[-2]
@@ -130,3 +125,20 @@ print(master_clean.source.value_counts())
 
 #test
 #print(master_clean.source.head())
+
+#dog stage column
+#bikes.loc[bikes['weekday'].isin([5, 6]), 'is_weekend'] = 1  # 5 and 6 correspond to Sat and Sun
+master_clean['dog_stage'] = master_clean.doggo
+#master_clean.loc[master_clean['doggo'].isin(['doggo']), 'dog_stage'] = 'doggo'
+master_clean.loc[master_clean['doggo']=='doggo', 'dog_stage'] = 'doggo'
+master_clean.loc[master_clean['puppo']=='puppo', 'dog_stage'] = 'puppo'
+master_clean.loc[master_clean['floofer']=='floofer', 'dog_stage'] = 'floofer'
+master_clean.loc[master_clean['pupper']=='pupper', 'dog_stage'] = 'pupper'
+
+#test
+print(master_clean.dog_stage.value_counts())
+
+
+#dog names duplicated values
+#print(master_clean.name.value_counts().head())
+#print(master_clean[master_clean.name == "a"]['text'])
