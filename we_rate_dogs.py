@@ -92,11 +92,15 @@ tweet_json_new = tweet_json.copy()
 # combine tables into a new one df where we perform cleaning operations
 master_clean = twitter_archive_new.merge(image_predictions_new, on='tweet_id', how='inner').merge(tweet_json_new, on='tweet_id', how='inner')
 #test
-print(master_clean.head())
+#print(master_clean.head())
 #print(master_clean.info())
 
-#
-
+#keep only original dog ratings
+master_clean = master_clean[master_clean.retweeted_status_id.isnull()]
+col_to_drop = ['retweeted_status_id', 'retweeted_status_user_id', 'retweeted_status_timestamp']
+master_clean.drop(col_to_drop, axis=1, inplace = True)
+#test
+print(master_clean.info())
 
 #convert timestamp to date type
 master_clean['timestamp'] = pd.to_datetime(master_clean.timestamp)
