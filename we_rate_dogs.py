@@ -119,3 +119,14 @@ print(master_clean.name.value_counts().head())
 print(master_clean[master_clean.name == "a"]['text'])
 
 #extract source from link in source column
+print(master_clean.source[10])
+source = []
+for s in master_clean.source:
+    source_split = s.split('>')[-2].split('<')[-2]
+    source.append(source_split)
+
+master_clean['source'] = source
+print(master_clean.source.value_counts())
+
+#test
+#print(master_clean.source.head())
