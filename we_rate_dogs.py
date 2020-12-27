@@ -174,5 +174,13 @@ for url in master_clean.expanded_urls:
 master_clean = master_clean[~master_clean.text.str.contains('We only rate dogs.')]
 
 #test
-only_dogs = master_clean[master_clean['text'].str.contains('We only rate dogs.')]
-print(only_dogs[['rating_numerator', 'name', 'retweet_count', 'favorite_count', 'text']])
+#only_dogs = master_clean[master_clean['text'].str.contains('We only rate dogs.')]
+#print(only_dogs[['rating_numerator', 'name', 'retweet_count', 'favorite_count', 'text']])
+
+#zero favorites fields
+zero_fav = master_clean.query('favorite_count == 0')
+#for i in zero_fav.text:
+#    print(i)
+
+zero_rt = master_clean.query('retweet_count == 0')
+print(zero_rt)
